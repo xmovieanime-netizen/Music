@@ -16,10 +16,10 @@ GROQ_MODEL = getenv("GROQ_MODEL", "llama-3.1-8b-instant")
 COMMAND_PREFIXES = list(getenv("COMMAND_PREFIXES", "/ ! .").split())
 
 # Bot and owner info
-OWNER_USERNAME = getenv("OWNER_USERNAME", "urstarkz")
+OWNER_USERNAME = getenv("OWNER_USERNAME", "unrealaura")
 BOT_USERNAME = getenv("BOT_USERNAME", "")
-BOT_NAME = getenv("BOT_NAME", "Sanya")
-ASSUSERNAME = getenv("ASSUSERNAME", "SANYAassistant")
+BOT_NAME = getenv("BOT_NAME", "Divine Cult Music")
+ASSUSERNAME = getenv("ASSUSERNAME", "DivineCultAssistant")
 MUST_JOIN = getenv("MUST_JOIN", "")
 BASE_URL = "https://api.waifu.pics"
 
@@ -31,6 +31,8 @@ DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 17000))
 LOGGER_ID = int(getenv("LOGGER_ID", ""))
 OWNER_ID = int(getenv("OWNER_ID", ""))
 POST_CHANNEL_ID = int(getenv("POST_CHANNEL_ID", ""))
+# Auto delete media sent by bot (in seconds, 0 = disabled)
+AUTO_DELETE_DELAY = int(getenv("AUTO_DELETE_DELAY", "300"))
 
 # Heroku
 HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
@@ -43,8 +45,8 @@ UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "main")
 GIT_TOKEN = getenv("GIT_TOKEN", None)
 
 # Support
-SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "")
-SUPPORT_CHAT = getenv("SUPPORT_CHAT", "")
+SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/divinecultgc")
+SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/divinecultgc")
 
 # Mini App
 MINI_APP_URL = getenv("MINI_APP_URL", "")

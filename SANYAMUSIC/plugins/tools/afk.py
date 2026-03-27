@@ -7,8 +7,8 @@ from SANYAMUSIC import app
 from SANYAMUSIC.mongo.readable_time import get_readable_time
 from SANYAMUSIC.mongo.afkdb import add_afk, is_afk, remove_afk
 
-# Helper function to delete AFK messages after 15 seconds
-async def auto_delete_afk(msg, delay=15):
+# Helper function to delete AFK messages after 30 seconds
+async def auto_delete_afk(msg, delay=30):
     await asyncio.sleep(delay)
     try:
         await msg.delete()
@@ -26,41 +26,26 @@ async def active_afk(_, message: Message):
         try:
             afktype = reasondb["type"]
             timeafk = reasondb["time"]
-            data = reasondb["data"]
             reasonafk = reasondb["reason"]
             seenago = get_readable_time((int(time.time() - timeafk)))
+            
+            # Only text replies
             if afktype == "text":
                 send = await message.reply_text(
                     f"**{message.from_user.first_name}** ɪs ʙᴀᴄᴋ ᴏɴʟɪɴᴇ ᴀɴᴅ ᴡᴀs ᴀᴡᴀʏ ғᴏʀ {seenago}",
                     disable_web_page_preview=True,
                 )
-            if afktype == "text_reason":
+            elif afktype == "text_reason":
                 send = await message.reply_text(
                     f"**{message.from_user.first_name}** ɪs ʙᴀᴄᴋ ᴏɴʟɪɴᴇ ᴀɴᴅ ᴡᴀs ᴀᴡᴀʏ ғᴏʀ {seenago}\n\nʀᴇᴀsᴏɴ: `{reasonafk}`",
                     disable_web_page_preview=True,
                 )
-            if afktype == "animation":
-                if str(reasonafk) == "None":
-                    send = await message.reply_animation(
-                        data,
-                        caption=f"**{message.from_user.first_name}** ɪs ʙᴀᴄᴋ ᴏɴʟɪɴᴇ ᴀɴᴅ ᴡᴀs ᴀᴡᴀʏ ғᴏʀ {seenago}",
-                    )
-                else:
-                    send = await message.reply_animation(
-                        data,
-                        caption=f"**{message.from_user.first_name}** ɪs ʙᴀᴄᴋ ᴏɴʟɪɴᴇ ᴀɴᴅ ᴡᴀs ᴀᴡᴀʏ ғᴏʀ {seenago}\n\nʀᴇᴀsᴏɴ: `{reasonafk}`",
-                    )
-            if afktype == "photo":
-                if str(reasonafk) == "None":
-                    send = await message.reply_photo(
-                        photo=f"downloads/{user_id}.jpg",
-                        caption=f"**{message.from_user.first_name}** ɪs ʙᴀᴄᴋ ᴏɴʟɪɴᴇ ᴀɴᴅ ᴡᴀs ᴀᴡᴀʏ ғᴏʀ {seenago}",
-                    )
-                else:
-                    send = await message.reply_photo(
-                        photo=f"downloads/{user_id}.jpg",
-                        caption=f"**{message.from_user.first_name}** ɪs ʙᴀᴄᴋ ᴏɴʟɪɴᴇ ᴀɴᴅ ᴡᴀs ᴀᴡᴀʏ ғᴏʀ {seenago}\n\nʀᴇᴀsᴏɴ: `{reasonafk}`",
-                    )
+            else:
+                # For animation, photo, or sticker - only send text
+                send = await message.reply_text(
+                    f"**{message.from_user.first_name}** ɪs ʙᴀᴄᴋ ᴏɴʟɪɴᴇ ᴀɴᴅ ᴡᴀs ᴀᴡᴀʏ ғᴏʀ {seenago}\n\nʀᴇᴀsᴏɴ: `{reasonafk}`" if reasonafk and str(reasonafk) != "None" else f"**{message.from_user.first_name}** ɪs ʙᴀᴄᴋ ᴏɴʟɪɴᴇ ᴀɴᴅ ᴡᴀs ᴀᴡᴀʏ ғᴏʀ {seenago}",
+                    disable_web_page_preview=True,
+                )
             asyncio.create_task(auto_delete_afk(send))
         except Exception:
             send = await message.reply_text(
@@ -75,32 +60,23 @@ async def active_afk(_, message: Message):
         _reason = (message.text.split(None, 1)[1].strip())[:100]
         details = {"type": "text_reason", "time": time.time(), "data": None, "reason": _reason}
     elif len(message.command) == 1 and message.reply_to_message.animation:
-        _data = message.reply_to_message.animation.file_id
-        details = {"type": "animation", "time": time.time(), "data": _data, "reason": None}
+        # Store as text instead of animation
+        details = {"type": "text", "time": time.time(), "data": None, "reason": None}
     elif len(message.command) > 1 and message.reply_to_message.animation:
-        _data = message.reply_to_message.animation.file_id
         _reason = (message.text.split(None, 1)[1].strip())[:100]
-        details = {"type": "animation", "time": time.time(), "data": _data, "reason": _reason}
+        details = {"type": "text_reason", "time": time.time(), "data": None, "reason": _reason}
     elif len(message.command) == 1 and message.reply_to_message.photo:
-        await app.download_media(message.reply_to_message, file_name=f"{user_id}.jpg")
-        details = {"type": "photo", "time": time.time(), "data": None, "reason": None}
+        # Store as text instead of photo
+        details = {"type": "text", "time": time.time(), "data": None, "reason": None}
     elif len(message.command) > 1 and message.reply_to_message.photo:
-        await app.download_media(message.reply_to_message, file_name=f"{user_id}.jpg")
         _reason = message.text.split(None, 1)[1].strip()
-        details = {"type": "photo", "time": time.time(), "data": None, "reason": _reason}
+        details = {"type": "text_reason", "time": time.time(), "data": None, "reason": _reason}
     elif len(message.command) == 1 and message.reply_to_message.sticker:
-        if message.reply_to_message.sticker.is_animated:
-            details = {"type": "text", "time": time.time(), "data": None, "reason": None}
-        else:
-            await app.download_media(message.reply_to_message, file_name=f"{user_id}.jpg")
-            details = {"type": "photo", "time": time.time(), "data": None, "reason": None}
+        # Store as text instead of media
+        details = {"type": "text", "time": time.time(), "data": None, "reason": None}
     elif len(message.command) > 1 and message.reply_to_message.sticker:
         _reason = (message.text.split(None, 1)[1].strip())[:100]
-        if message.reply_to_message.sticker.is_animated:
-            details = {"type": "text_reason", "time": time.time(), "data": None, "reason": _reason}
-        else:
-            await app.download_media(message.reply_to_message, file_name=f"{user_id}.jpg")
-            details = {"type": "photo", "time": time.time(), "data": None, "reason": _reason}
+        details = {"type": "text_reason", "time": time.time(), "data": None, "reason": _reason}
     else:
         details = {"type": "text", "time": time.time(), "data": None, "reason": None}
 
@@ -134,25 +110,13 @@ async def chat_watcher_func(_, message):
         try:
             afktype = reasondb["type"]
             timeafk = reasondb["time"]
-            data = reasondb["data"]
             reasonafk = reasondb["reason"]
             seenago = get_readable_time((int(time.time() - timeafk)))
+            
             if afktype == "text":
                 msg += f"**{user_name[:25]}** ɪs ʙᴀᴄᴋ ᴏɴʟɪɴᴇ ᴀɴᴅ ᴡᴀs ᴀᴡᴀʏ ғᴏʀ {seenago}\n\n"
-            if afktype == "text_reason":
+            elif afktype == "text_reason":
                 msg += f"**{user_name[:25]}** ɪs ʙᴀᴄᴋ ᴏɴʟɪɴᴇ ᴀɴᴅ ᴡᴀs ᴀᴡᴀʏ ғᴏʀ {seenago}\n\nʀᴇᴀsᴏɴ: `{reasonafk}`\n\n"
-            if afktype == "animation":
-                caption = f"**{user_name[:25]}** ɪs ʙᴀᴄᴋ ᴏɴʟɪɴᴇ ᴀɴᴅ ᴡᴀs ᴀᴡᴀʏ ғᴏʀ {seenago}"
-                if str(reasonafk) != "None":
-                    caption += f"\n\nʀᴇᴀsᴏɴ: `{reasonafk}`"
-                send = await message.reply_animation(data, caption=caption)
-                asyncio.create_task(auto_delete_afk(send))
-            if afktype == "photo":
-                caption = f"**{user_name[:25]}** ɪs ʙᴀᴄᴋ ᴏɴʟɪɴᴇ ᴀɴᴅ ᴡᴀs ᴀᴡᴀʏ ғᴏʀ {seenago}"
-                if str(reasonafk) != "None":
-                    caption += f"\n\nʀᴇᴀsᴏɴ: `{reasonafk}`"
-                send = await message.reply_photo(photo=f"downloads/{userid}.jpg", caption=caption)
-                asyncio.create_task(auto_delete_afk(send))
         except:
             msg += f"**{user_name[:25]}** ɪs ʙᴀᴄᴋ ᴏɴʟɪɴᴇ\n\n"
 
@@ -165,27 +129,15 @@ async def chat_watcher_func(_, message):
                 try:
                     afktype = reasondb["type"]
                     timeafk = reasondb["time"]
-                    data = reasondb["data"]
                     reasonafk = reasondb["reason"]
                     seenago = get_readable_time((int(time.time() - timeafk)))
+                    
                     if afktype == "text":
                         msg += f"**{replied_first_name[:25]}** ɪs ᴀғᴋ sɪɴᴄᴇ {seenago}\n\n"
-                    if afktype == "text_reason":
+                    elif afktype == "text_reason":
                         msg += f"**{replied_first_name[:25]}** ɪs ᴀғᴋ sɪɴᴄᴇ {seenago}\n\nʀᴇᴀsᴏɴ: `{reasonafk}`\n\n"
-                    if afktype == "animation":
-                        cap = f"**{replied_first_name[:25]}** ɪs ᴀғᴋ sɪɴᴄᴇ {seenago}"
-                        if str(reasonafk) != "None":
-                            cap += f"\n\nʀᴇᴀsᴏɴ: `{reasonafk}`"
-                        send = await message.reply_animation(data, caption=cap)
-                        asyncio.create_task(auto_delete_afk(send))
-                    if afktype == "photo":
-                        cap = f"**{replied_first_name[:25]}** ɪs ᴀғᴋ sɪɴᴄᴇ {seenago}"
-                        if str(reasonafk) != "None":
-                            cap += f"\n\nʀᴇᴀsᴏɴ: `{reasonafk}`"
-                        send = await message.reply_photo(photo=f"downloads/{replied_user_id}.jpg", caption=cap)
-                        asyncio.create_task(auto_delete_afk(send))
                 except Exception:
-                    msg += f"**{replied_first_name}** ɪs ᴀғᴋ,\nᴩᴀᴛᴀ ɴɪ ʙᴄ ᴋᴀʙ sᴇ\n\n"
+                    msg += f"**{replied_first_name}** ɪs ᴀғᴋ\n\n"
         except:
             pass
 
@@ -209,25 +161,13 @@ async def chat_watcher_func(_, message):
                     try:
                         afktype = reasondb["type"]
                         timeafk = reasondb["time"]
-                        data = reasondb["data"]
                         reasonafk = reasondb["reason"]
                         seenago = get_readable_time((int(time.time() - timeafk)))
+                        
                         if afktype == "text":
                             msg += f"**{user.first_name[:25]}** ɪs ᴀғᴋ sɪɴᴄᴇ {seenago}\n\n"
-                        if afktype == "text_reason":
+                        elif afktype == "text_reason":
                             msg += f"**{user.first_name[:25]}** ɪs ᴀғᴋ sɪɴᴄᴇ {seenago}\n\nʀᴇᴀsᴏɴ: `{reasonafk}`\n\n"
-                        if afktype == "animation":
-                            cap = f"**{user.first_name[:25]}** ɪs ᴀғᴋ sɪɴᴄᴇ {seenago}"
-                            if str(reasonafk) != "None":
-                                cap += f"\n\nʀᴇᴀsᴏɴ: `{reasonafk}`"
-                            send = await message.reply_animation(data, caption=cap)
-                            asyncio.create_task(auto_delete_afk(send))
-                        if afktype == "photo":
-                            cap = f"**{user.first_name[:25]}** ɪs ᴀғᴋ sɪɴᴄᴇ {seenago}"
-                            if str(reasonafk) != "None":
-                                cap += f"\n\nʀᴇᴀsᴏɴ: `{reasonafk}`"
-                            send = await message.reply_photo(photo=f"downloads/{user.id}.jpg", caption=cap)
-                            asyncio.create_task(auto_delete_afk(send))
                     except:
                         msg += f"**{user.first_name[:25]}** ɪs ᴀғᴋ\n\n"
             elif (entity[j].type) == MessageEntityType.TEXT_MENTION:
@@ -245,25 +185,13 @@ async def chat_watcher_func(_, message):
                     try:
                         afktype = reasondb["type"]
                         timeafk = reasondb["time"]
-                        data = reasondb["data"]
                         reasonafk = reasondb["reason"]
                         seenago = get_readable_time((int(time.time() - timeafk)))
+                        
                         if afktype == "text":
-                            msg += f"**{first_name[:25]}** is ᴀғᴋ sɪɴᴄᴇ {seenago}\n\n"
-                        if afktype == "text_reason":
+                            msg += f"**{first_name[:25]}** ɪs ᴀғᴋ sɪɴᴄᴇ {seenago}\n\n"
+                        elif afktype == "text_reason":
                             msg += f"**{first_name[:25]}** ɪs ᴀғᴋ sɪɴᴄᴇ {seenago}\n\nʀᴇᴀsᴏɴ: `{reasonafk}`\n\n"
-                        if afktype == "animation":
-                            cap = f"**{first_name[:25]}** ɪs ᴀғᴋ sɪɴᴄᴇ {seenago}"
-                            if str(reasonafk) != "None":
-                                cap += f"\n\nʀᴇᴀsᴏɴ: `{reasonafk}`"
-                            send = await message.reply_animation(data, caption=cap)
-                            asyncio.create_task(auto_delete_afk(send))
-                        if afktype == "photo":
-                            cap = f"**{first_name[:25]}** ɪs ᴀғᴋ sɪɴᴄᴇ {seenago}"
-                            if str(reasonafk) != "None":
-                                cap += f"\n\nʀᴇᴀsᴏɴ: `{reasonafk}`"
-                            send = await message.reply_photo(photo=f"downloads/{user_id}.jpg", caption=cap)
-                            asyncio.create_task(auto_delete_afk(send))
                     except:
                         msg += f"**{first_name[:25]}** ɪs ᴀғᴋ\n\n"
             j += 1
@@ -273,5 +201,3 @@ async def chat_watcher_func(_, message):
             asyncio.create_task(auto_delete_afk(send))
         except:
             return
-
-

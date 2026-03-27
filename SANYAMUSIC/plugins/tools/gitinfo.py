@@ -32,7 +32,7 @@ async def github(_, message: Message):
     repos = data.get("public_repos", "0")
     followers = data.get("followers", "0")
     following = data.get("following", "0")
-    avatar = data.get("avatar_url", None)
+    # avatar = data.get("avatar_url", None)
 
     caption = f"""
 ✨ **ɢɪᴛʜᴜʙ ᴘʀᴏғɪʟᴇ ɪɴꜰᴏ**
@@ -52,8 +52,10 @@ async def github(_, message: Message):
     keyboard = InlineKeyboardMarkup(
         [[InlineKeyboardButton("❌ ᴄʟᴏsᴇ", callback_data="close")]]
     )
+    
+    await message.reply_text(caption, reply_markup=keyboard)
 
-    if avatar:
-        await message.reply_photo(photo=avatar, caption=caption, reply_markup=keyboard)
-    else:
-        await message.reply_text(caption, reply_markup=keyboard)
+    # if avatar:
+    #     await message.reply_photo(photo=avatar, caption=caption, reply_markup=keyboard)
+    # else:
+    #     await message.reply_text(caption, reply_markup=keyboard)
