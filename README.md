@@ -413,3 +413,4 @@ To get an instant result do /reboot in chat of logger .
 
 
 
+# Kai
