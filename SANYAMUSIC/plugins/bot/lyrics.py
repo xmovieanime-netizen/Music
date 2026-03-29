@@ -1,51 +1,79 @@
-import os
 import random
 import re
 import string
 
-import lyricsgenius as lg
-from pyrogram import Client, filters
+import aiohttp
+from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from SANYAMUSIC import app
-from SANYAMUSIC.utils.decorators.language import language # <--- Imported decorator
-
+from SANYAMUSIC.utils.decorators.language import language
 from config import BANNED_USERS, lyrical
 
-# Hardcode the Genius API key.
-api_key = "fcXGwudRZTE8zdMOYKNMoRGIWfBjca_4s5wF5keHeCTd68yURmceO4MGhAbyx-qp"
 
-# if not api_key:
-#     raise ValueError("GENIUS_ACCESS_TOKEN environment variable not set. Please set your Genius API key.")
+async def fetch_lyrics(title: str) -> dict:
+    """Fetch lyrics using free lyrics.ovh API"""
+    # Try splitting into artist + song
+    parts = title.split("-", 1) if "-" in title else title.split(" ", 1)
+    if len(parts) == 2:
+        artist, song = parts[0].strip(), parts[1].strip()
+    else:
+        artist, song = "", title.strip()
 
-y = lg.Genius(
-    api_key,
-    skip_non_songs=True,
-    excluded_terms=["(Remix)", "(Live)"],
-    remove_section_headers=True,
-)
-y.verbose = False
+    urls = []
+    if artist and song:
+        urls.append(f"https://api.lyrics.ovh/v1/{artist}/{song}")
+    urls.append(f"https://api.lyrics.ovh/v1/{title}/")
 
-# --- END MODIFIED SECTION ---
+    async with aiohttp.ClientSession() as session:
+        for url in urls:
+            try:
+                async with session.get(url, timeout=aiohttp.ClientTimeout(total=15)) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        lyrics = data.get("lyrics")
+                        if lyrics:
+                            return {"lyrics": lyrics.strip(), "found": True}
+            except Exception:
+                continue
+
+    # Fallback: try searching via lrclib.net (completely free, no key)
+    try:
+        async with aiohttp.ClientSession() as session:
+            params = {"q": title}
+            async with session.get(
+                "https://lrclib.net/api/search",
+                params=params,
+                timeout=aiohttp.ClientTimeout(total=15),
+            ) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    if data and len(data) > 0:
+                        plain = data[0].get("plainLyrics")
+                        if plain:
+                            return {"lyrics": plain.strip(), "found": True}
+    except Exception:
+        pass
+
+    return {"lyrics": None, "found": False}
+
 
 @app.on_message(filters.command(["lyrics"]) & ~BANNED_USERS)
-@language # <--- FIX 1: Apply the imported language decorator
-async def lrsearch(client, message: Message, _): # <--- FIX 2: Add '_' argument for localization
+@language
+async def lrsearch(client, message: Message, _):
     if len(message.command) < 2:
         return await message.reply_text(_["lyrics_1"])
 
     title = message.text.split(None, 1)[1]
     m = await message.reply_text(_["lyrics_2"])
-    
-    S = y.search_song(title, get_full_info=False)
-    if S is None:
+
+    result = await fetch_lyrics(title)
+
+    if not result["found"] or not result["lyrics"]:
         return await m.edit(_["lyrics_3"].format(title))
 
     ran_hash = "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
-    lyric = S.lyrics
-    if "Embed" in lyric:
-        lyric = re.sub(r"\d*Embed", "", lyric)
-    lyrical[ran_hash] = lyric
+    lyrical[ran_hash] = result["lyrics"]
 
     upl = InlineKeyboardMarkup(
         [
@@ -57,5 +85,5 @@ async def lrsearch(client, message: Message, _): # <--- FIX 2: Add '_' argument 
             ]
         ]
     )
-    
+
     await m.edit(_["lyrics_4"], reply_markup=upl)

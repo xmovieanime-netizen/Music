@@ -25,7 +25,7 @@ from SANYAMUSIC.utils.decorators.language import LanguageStart
 from SANYAMUSIC.utils.formatters import get_readable_time
 from SANYAMUSIC.utils.inline import help_pannel, private_panel, start_panel
 from strings import get_string
-from config import BANNED_USERS
+from config import BANNED_USERS, lyrical
 
 # Assets 
 STICKER = [
@@ -137,6 +137,17 @@ async def start_pm(client, message: Message, _):
                 caption=searched_text,
                 reply_markup=key,
             )
+        elif name.startswith("lyrics_"):
+            ran_hash = name.replace("lyrics_", "", 1)
+            lyrics = lyrical.get(ran_hash)
+            if not lyrics:
+                await message.reply_text("❌ **ʟʏʀɪᴄs ɴᴏᴛ ғᴏᴜɴᴅ ᴏʀ ᴇxᴘɪʀᴇᴅ.**")
+            else:
+                if len(lyrics) > 4096:
+                    for i in range(0, len(lyrics), 4096):
+                        await message.reply_text(lyrics[i:i + 4096])
+                else:
+                    await message.reply_text(lyrics)
     else:
         # Standard Main Start Panel
         out = private_panel(_)
