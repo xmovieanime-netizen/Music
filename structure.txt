@@ -1,0 +1,124 @@
+.
+├── app.json
+├── cache
+│   ├── AKiynoClCaA_v4.png
+│   ├── bElxQuWMTaA_v4.png
+│   ├── FuBX_ZHMj78_v4.png
+│   ├── JFcgOboQZ08_v4.png
+│   ├── kyLuzKbgXAs_v4.png
+│   ├── oKxuiw3iMBE_v4.png
+│   ├── SGNq-OeSZLk_v4.png
+│   ├── u7JMhVI7taQ_v4.png
+│   └── w5VFOKKAbQQ_v4.png
+├── CODE_OF_CONDUCT.md
+├── commands.txt
+├── config.py
+├── CONTRIBUTING.md
+├── Dockerfile
+├── downloads
+├── heroku.yml
+├── LICENSE
+├── log.txt
+├── Procfile
+├── README.md
+├── requirements.txt
+├── runtime.txt
+├── sample.env
+├── SANYAMUSIC
+│   ├── assets
+│   │   ├── assets
+│   │   ├── call.mp3
+│   │   ├── cookies.txt
+│   │   ├── cppic.png
+│   │   ├── default.ttf
+│   │   ├── font2.ttf
+│   │   ├── font.ttf
+│   │   ├── hiroko.ttf
+│   │   ├── __init__.py
+│   │   ├── shashank.png
+│   │   ├── upic.png
+│   │   ├── userinfo.png
+│   │   └── wel2.png
+│   ├── core
+│   │   ├── bot.py
+│   │   ├── call.py
+│   │   ├── dir.py
+│   │   ├── git.py
+│   │   ├── mongo.py
+│   │   ├── sections.py
+│   │   └── userbot.py
+│   ├── __init__.py
+│   ├── logging.py
+│   ├── __main__.py
+│   ├── misc.py
+│   ├── mongo
+│   │   ├── afkdb.py
+│   │   ├── chatbot_db.py
+│   │   ├── couples_db.py
+│   │   ├── filtersdb.py
+│   │   ├── nightmodedb.py
+│   │   ├── notesdb.py
+│   │   └── readable_time.py
+│   ├── platforms
+│   │   ├── Apple.py
+│   │   ├── Carbon.py
+│   │   ├── __init__.py
+│   │   ├── Resso.py
+│   │   ├── Soundcloud.py
+│   │   ├── Spotify.py
+│   │   ├── Telegram.py
+│   │   └── Youtube.py
+│   ├── plugins
+│   │   ├── admins
+│   │   ├── bot
+│   │   ├── extra
+│   │   ├── __init__.py
+│   │   ├── misc
+│   │   ├── play
+│   │   ├── sudo
+│   │   └── tools
+│   └── utils
+│       ├── admin_check.py
+│       ├── admin_filters.py
+│       ├── channelplay.py
+│       ├── database.py
+│       ├── decorators
+│       ├── downloader.py
+│       ├── errors.py
+│       ├── exceptions.py
+│       ├── extraction.py
+│       ├── files.py
+│       ├── filters_func.py
+│       ├── formatters.py
+│       ├── imposterdb.py
+│       ├── __init__.py
+│       ├── inline
+│       ├── inlinequery.py
+│       ├── logger.py
+│       ├── mongo.py
+│       ├── msg_types.py
+│       ├── notes_func.py
+│       ├── pastebin.py
+│       ├── Sanya_ban.py
+│       ├── SANYA_font.py
+│       ├── shivdb.py
+│       ├── showbin.py
+│       ├── stickerset.py
+│       ├── stream
+│       ├── stuffs
+│       ├── sys.py
+│       └── thumbnails.py
+├── setup
+├── start
+├── strings
+│   ├── helpers.py
+│   ├── __init__.py
+│   └── langs
+│       ├── ar.yml
+│       ├── en.yml
+│       ├── hi.yml
+│       └── pa.yml
+├── structure.txt
+└── website.txt
+
+24 directories, 98 files
