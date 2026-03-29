@@ -91,18 +91,18 @@ DEBUG_IGNORE_LOG = True
 
 ###### IMAGE URLS ######
 
-START_IMG_URL = getenv("START_IMG_URL", "https://files.catbox.moe/3sbjl5.jpg")
+START_IMG_URL = getenv("START_IMG_URL", "https://files.catbox.moe/2an306.jpg")
 PING_IMG_URL = getenv("PING_IMG_URL", "https://telegra.ph/file/7bb907999ea7156227283.jpg")
-PLAYLIST_IMG_URL = "https://files.catbox.moe/3sbjl5.jpg"
-STATS_IMG_URL = "https://files.catbox.moe/3sbjl5.jpg"
-TELEGRAM_AUDIO_URL = "https://files.catbox.moe/3sbjl5.jpg"
-TELEGRAM_VIDEO_URL = "https://files.catbox.moe/3sbjl5.jpg"
-STREAM_IMG_URL = "https://files.catbox.moe/3sbjl5.jpg"
-SOUNCLOUD_IMG_URL = "https://files.catbox.moe/3sbjl5.jpg"
-YOUTUBE_IMG_URL = "https://files.catbox.moe/3sbjl5.jpg"
-SPOTIFY_ARTIST_IMG_URL = "https://files.catbox.moe/3sbjl5.jpg"
-SPOTIFY_ALBUM_IMG_URL = "https://files.catbox.moe/3sbjl5.jpg"
-SPOTIFY_PLAYLIST_IMG_URL = "https://files.catbox.moe/3sbjl5.jpg"
+PLAYLIST_IMG_URL = "https://files.catbox.moe/2an306.jpg"
+STATS_IMG_URL = "https://files.catbox.moe/2an306.jpg"
+TELEGRAM_AUDIO_URL = "https://files.catbox.moe/2an306.jpg"
+TELEGRAM_VIDEO_URL = "https://files.catbox.moe/2an306.jpg"
+STREAM_IMG_URL = "https://files.catbox.moe/2an306.jpg"
+SOUNCLOUD_IMG_URL = "https://files.catbox.moe/2an306.jpg"
+YOUTUBE_IMG_URL = "https://files.catbox.moe/2an306.jpg"
+SPOTIFY_ARTIST_IMG_URL = "https://files.catbox.moe/2an306.jpg"
+SPOTIFY_ALBUM_IMG_URL = "https://files.catbox.moe/2an306.jpg"
+SPOTIFY_PLAYLIST_IMG_URL = "https://files.catbox.moe/2an306.jpg"
 
 # API Keys (Moved from plugins to secure them)
 GPT_API_KEY = getenv("GPT_API_KEY", "62152c3c83c0e23c52d4478fbb105491e72dc21d12d1fdbec294658a5494b15e")
