@@ -17,7 +17,7 @@ POLICE = [
 
 # Stores last used time per chat
 cooldown_dict = {}
-COOLDOWN_SECONDS = 30 * 60  # 30 minutes
+COOLDOWN_SECONDS = 5 * 60  # 5 minutes
 
 
 def dt():
@@ -59,7 +59,7 @@ async def ctest(_, message):
             mins = int(remaining // 60)
             secs = int(remaining % 60)
             return await message.reply_text(
-                f"**⏳ ᴄᴏᴏʟᴅᴏᴡɴ ᴀᴄᴛɪᴠᴇ!\n\nᴅᴏʙᴀʀᴀ ᴛʀʏ ᴋᴀʀᴏ {mins}ᴍ {secs}s ᴍᴀɪɴ. ⏱**"
+                f"**⏳ ᴛʜᴀᴍ ᴊᴀ ʙᴋʟ\n\nᴊᴀ ᴘᴀᴀɴɪ ᴘɪɪᴋʀ ᴀᴀ {mins}ᴍ {secs}s ᴍᴀɪɴ. ⏱**"
             )
 
     # Update cooldown time
@@ -82,8 +82,10 @@ async def ctest(_, message):
         N2 = (await app.get_users(c2_id)).mention
 
         TXT = f"""** ᴄᴜᴛɪᴇꜱ !! ᴏꜰ ᴛʜᴇ ᴅᴀʏ 💖 :
+
 {N1} + {N2} = 🎀💝
-ᴀᴄʜʜᴀ ᴊɪ ??  **"""
+
+ᴀʏʏʏʏʏʏʏʏʏ ✨  **"""
 
         await msg.edit(TXT, reply_markup=InlineKeyboardMarkup(POLICE))
 
