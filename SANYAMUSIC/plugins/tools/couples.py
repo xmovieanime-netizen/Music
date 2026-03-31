@@ -59,7 +59,7 @@ async def ctest(_, message):
             mins = int(remaining // 60)
             secs = int(remaining % 60)
             return await message.reply_text(
-                f"**⏳ A Cᴏᴜᴘʟᴇ Hᴀꜱ Bᴇᴇɴ Dᴇᴄʟᴀʀᴇᴅ Rᴇᴄᴇɴᴛʟʏ.\n\⏰ Tʀʏ Aꜰᴛᴇʀ {mins}ᴍ {secs}s **"
+                f"**⏳ A Cᴏᴜᴘʟᴇ Hᴀꜱ Bᴇᴇɴ Dᴇᴄʟᴀʀᴇᴅ Rᴇᴄᴇɴᴛʟʏ.\n ⏰ Tʀʏ Aꜰᴛᴇʀ {mins}ᴍ {secs}s **"
             )
 
     # Update cooldown time
