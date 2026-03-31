@@ -3,6 +3,21 @@ from datetime import datetime
 from pyrogram import filters
 from pyrogram.enums import ChatType
 from SANYAMUSIC import app
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+import time
+
+POLICE = [
+    [
+        InlineKeyboardButton(
+            text="ᴏᴡɴᴇʀ",
+            url="https://t.me/unrealaura",
+        ),
+    ],
+]
+
+# Stores last used time per chat
+cooldown_dict = {}
+COOLDOWN_SECONDS = 5 * 60  # 5 minutes
 
 
 def dt():
@@ -31,6 +46,25 @@ today = str(dt()[0])
 async def ctest(_, message):
     if message.chat.type == ChatType.PRIVATE:
         return await message.reply_text("ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴏɴʟʏ ᴡᴏʀᴋs ɪɴ ɢʀᴏᴜᴘs.")
+
+    # --- Cooldown Check ---
+    chat_id = message.chat.id
+    now = time.time()
+
+    if chat_id in cooldown_dict:
+        elapsed = now - cooldown_dict[chat_id]
+        remaining = COOLDOWN_SECONDS - elapsed
+
+        if remaining > 0:
+            mins = int(remaining // 60)
+            secs = int(remaining % 60)
+            return await message.reply_text(
+                f"**⏳ ᴛʜᴀᴍ ᴊᴀ ʙᴋʟ\n\nᴊᴀ ᴘᴀᴀɴɪ ᴘɪɪᴋʀ ᴀᴀ {mins}ᴍ {secs}s ᴍᴀɪɴ. ⏱**"
+            )
+
+    # Update cooldown time
+    cooldown_dict[chat_id] = now
+
     try:
         msg = await message.reply_text("ɢᴇɴᴇʀᴀᴛɪɴɢ ᴄᴏᴜᴘʟᴇs...")
 
@@ -47,13 +81,13 @@ async def ctest(_, message):
         N1 = (await app.get_users(c1_id)).mention
         N2 = (await app.get_users(c2_id)).mention
 
-        TXT = f"""**ᴛᴏᴅᴀʏ's ᴄᴏᴜᴘʟᴇ ᴏғ ᴛʜᴇ ᴅᴀʏ :
+        TXT = f"""** ᴄᴜᴛɪᴇꜱ !! ᴏꜰ ᴛʜᴇ ᴅᴀʏ 💖 :
 
-{N1} + {N2} = 💚
+{N1} + {N2} = 🎀💝
 
-ɴᴇxᴛ ᴄᴏᴜᴘʟᴇs ᴡɪʟʟ ʙᴇ sᴇʟᴇᴄᴛᴇᴅ ᴏɴ {tomorrow} !!**"""
+ᴀʏʏʏʏʏʏʏʏʏ ✨  **"""
 
-        await msg.edit(TXT)
+        await msg.edit(TXT, reply_markup=InlineKeyboardMarkup(POLICE))
 
     except Exception as e:
         print(str(e))
