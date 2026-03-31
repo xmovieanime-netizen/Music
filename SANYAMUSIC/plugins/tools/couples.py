@@ -81,9 +81,9 @@ async def ctest(_, message):
         N1 = (await app.get_users(c1_id)).mention
         N2 = (await app.get_users(c2_id)).mention
 
-        TXT = f"""** ᴄᴜᴛɪᴇꜱ !! ᴏꜰ ᴛʜᴇ ᴅᴀʏ 💖 :
+        TXT = f"""** Cᴜᴛɪᴇꜱ !! Oꜰ Tʜᴇ Dᴀʏ 💖 :
 
-{N1} + {N2} = </𝟑
+{N1} + {N2} = 💘
 
   **"""
 
